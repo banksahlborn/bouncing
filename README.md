@@ -1,88 +1,141 @@
-let ball1, ball2, ball3;
+SKIP TO PLAY SKETCH
+Autosave enabled.
 
-let SPEED = 5;
 
+File
+Edit
+Sketch
+Help
+English
+Hello, Banksahlborn!
+
+
+
+Auto-refresh
+
+Honored croissant
+
+Public
+p5.js 1.11.10
+
+
+sketch.js
+Saved: just now
+1
+let balls = [] // list/array
+2
+let initialNumberOfBalls = 4
+3
+​
+4
+const SPEED = 5 //(5) - (6) ITS SUBTRACTION but how do you get it as a range 
+5
+const BALL_SIZE_MIN = 15
+6
+const BALL_SIZE_MAX = 55
+7
+​
+8
 function setup() {
-  createCanvas(500, 600);
-  ellipseMode(RADIUS);
+9
+  createCanvas(600, 600)
+10
+  ellipseMode(RADIUS)
+11
   resetAllBalls()
+12
 }
-
+13
+​
+14
 function draw() {
-  background(11, 3, 252);
-  drawBall(ball1);
-  updateBall(ball1);
-  keepInBounds(ball1);
-  drawBall(ball2);
-  updateBall(ball2);
-  keepInBounds(ball2);
-  drawBall(ball3);
-  updateBall(ball3);
-  keepInBounds(ball3);
-  bounceBalls(ball1,ball2);
-  bounceBalls(ball2,ball3);
-  bounceBalls(ball1,ball3);
+15
+  background(11, 3, 252)
+16
+  fill("black")
+17
+  
+18
+  for( let ball of balls ) { // for each loop (loop over every item)
+19
+    drawBall(ball)
+20
+    updateBall(ball)
+21
+    keepInBounds(ball)
+22
+  }
+23
+  
+24
+  // for loop - loop a certain number of times
+25
+  // here I am using _nested_ loops
+26
+  for( let i = 0; i < balls.length - 1; i++ ) { 
+27
+    for( let j = i+1; j < balls.length; j++ ) {
+28
+      bounceBalls(balls[i], balls[j])
+29
+    }
+30
+  }
+31
 }
-
+32
+​
+33
+// if the distance between the centers 
+34
+//   is less than the sum of their radi
+35
+function ballsCollide(ballA, ballB) {
+36
+  return dist( ballA.position.x, ballA.position.y, ballB.position.x, ballB.position.y ) <= ballA.radius + ballB.radius
+37
+}
+38
+​
+39
 function bounceBalls(ballA, ballB) {
-  // if the distance between the centers is less than the sum of their radii
-  if( dist(ballA.x,ballA.y,ballB.x,ballB.y) <= ballA.radius + ballB.radius ) {
-    ballA.dx = ballA.dx * -1;
-    ballA.dy = ballA.dy * -1;
-    ballB.dx = ballB.dx * -1;
-    ballB.dy = ballB.dy * -1;
+40
+  if( ballsCollide(ballA, ballB) ) {
+41
+    ballA.velocity.x *= -1;
+42
+    ballA.velocity.y *= -1;
+43
+    ballB.velocity.x *= -1;
+44
+    ballB.velocity.y *= -1;
+45
   }
+46
 }
-
-
+47
+​
+48
+​
+49
 function keepInBounds(ball) {
-  // ball.x + ball.r > width, then we are off the screen // right
-  if( ball.x + ball.radius > width ) {
-     ball.dx = ball.dx * -1; // change x direction
+50
+  if( ball.position.x + ball.radius > width ) {
+51
+     ball.velocity.x *= -1; 
+52
   }
-  // ball.y + ball.r > height, then we are off the screen // bottom
-  if( ball.y + ball.radius > height ) {
-    ball.dy = ball.dy * -1; // change y direction
-  }
-  // ball.x - ball.r < 0, then we are off the screen // left
-  if( ball.x - ball.radius < 0 ) {
-    ball.dx = ball.dx * -1; // change x direction
-  }
-  // ball.y - ball.r > 0, then we are off the screen // top
-  if( ball.y - ball.radius < 0 ) {
-    ball.dy = ball.dy * -1; // change y direction
-  }
-}
+53
+​
+54
+  if( ball.position.y + ball.radius > height ) {
+There are no lint messages
+Current lineline 136
+Console
+Clear
 
-function resetAllBalls() {
-  ball1 = createBall()
-  ball2 = createBall()
-  ball3 = createBall()  
-}
+​
+Preview
 
-function mouseClicked() {
-  resetAllBalls()
-}
-
-function updateBall(ball) {
-  ball.y = ball.y + ball.dy;
-  ball.x = ball.x + ball.dx;  
-}
-
-function drawBall(ball) { // implicit declaration of the variable (parameter) ball
-  fill(ball.c);
-  square(ball.x,ball.y,ball.radius);  
-}
-
-function createBall() {
-  let ball = {} // creating an empty object
-  // assigning properties to that object
-  ball.c = color(random(256),random(256),random(256));
-  ball.radius = random(10,50); 
-  ball.x = random(ball.radius, width-ball.radius);
-  ball.y = random(ball.radius, height-ball.radius);
-  ball.dx = random(-SPEED,SPEED);
-  ball.dy = random(-SPEED,SPEED);
-  ball.radius = random(10,50);  
-  return ball;
-}
+Complete your gift to make an impact
+Donate
