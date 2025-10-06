@@ -1,5 +1,5 @@
-let balls = [] // list/array
-let initialNumberOfBalls = 5
+let shape = [] // list/array
+let initialNumberOfShapes = 5
 
 const SPEED = 3
 const BALL_SIZE_MIN = 10
@@ -15,19 +15,19 @@ function draw() {
   background(220)
   fill("black")
   
-  for( let ball of balls ) { // for each loop (loop over every item)
-    drawBall(ball)
-    updateBall(ball)
-    keepInBounds(ball)
+  for( let shape of shapes ) { // for each loop (loop over every item)
+    drawShape(shape)
+    updateShape(shape)
+    keepInBounds(shape)
   }
   
   // for loop - loop a certain number of times
   // here I am using _nested_ loops
-  for( let i = 0; i < balls.length - 1; i++ ) { 
-    for( let j = i+1; j < balls.length; j++ ) {
-      bounceBalls(balls[i], balls[j])
-    }
-  }
+  // for( let i = 0; i < balls.length - 1; i++ ) { 
+  //  for( let j = i+1; j < balls.length; j++ ) {
+  //    bounceBalls(balls[i], balls[j])
+  //  }
+  // }
 }
 
 // if the distance between the centers 
@@ -65,10 +65,10 @@ function keepInBounds(ball) {
 }
 
 function resetAllBalls() {
-  balls = [] // create an empty array
+  shapes = [] // create an empty array
   // while loop - loops while a condition is true
-  while( balls.length < initialNumberOfBalls ) {
-    createBall()
+  while( shapes.length < initialNumberOfShapes ) {
+    createShape()
   }
 }
 
@@ -77,7 +77,7 @@ function mouseClicked() {
 }
 
 function rotateCreateBall() {
-  balls.shift() // remove the oldest ball (front of the array)
+  shapes.shift() // remove the oldest ball (front of the array)
   createBall() // add a ball to the end of the array
 }
 
@@ -91,18 +91,33 @@ function keyPressed() {
   }
   
   if( key === ' ' ) {
-    createBall()
+    createShape()
   }
 }
 
-function updateBall(ball) {
-  ball.position.y = ball.position.y + ball.velocity.y;
-  ball.position.x = ball.position.x + ball.velocity.x;  
+function updateShape(shape) {
+  shape.position.y = shape.position.y + shape.velocity.y;
+  shape.position.x = shape.position.x + shape.velocity.x;  
 }
 
-function drawBall(ball) { 
-  fill(ball.c);
-  circle(ball.position.x,ball.position.y,ball.radius);  
+function drawShape(shape) { 
+  fill(shape.c);
+  if( shape.shape === "circle" ) {
+    circle(shape.position.x,shape.position.y,shape.radius);    
+  } else if( shape.shape === "square" ) {
+     square(shape.position.x,shape.position.y,shape.size);
+  
+  }
+  
+}
+
+function createShape() {
+  if( random() > 0.5 ) {
+    createBall() 
+  } else {
+    createSquare()
+
+  }
 }
 
 function createBallAt(position) {
@@ -111,11 +126,11 @@ function createBallAt(position) {
   newBall.radius = random(BALL_SIZE_MIN,BALL_SIZE_MAX)
   newBall.position = position
   
-  for( let ball of balls ) {
-    if( ballsCollide(ball,newBall) ) {
-      return createBall()
-    }
-  }
+  //for( let shape of shapes ) {
+  //  if( shapesCollide(shape,newBall) ) {
+  //    return createBall()
+  //  }
+  //}
     
   newBall.c = color(random(256),random(256),random(256))
     
@@ -123,15 +138,54 @@ function createBallAt(position) {
     x: random(-SPEED,SPEED),
     y: random(-SPEED,SPEED)
   }
+  
+  newBall.shape = "circle";
     
-  balls.push(newBall)
+  shapes.push( newBall );
 }
 
 
 function createBall() {
-  createBallAt({
+  return createBallAt({
     x: random(BALL_SIZE_MAX, width-BALL_SIZE_MAX),
     y: random(BALL_SIZE_MAX, height-BALL_SIZE_MAX)
   });
- } 
-  drawBall(ball1);
+}
+
+function createSquareAt(position) {
+  let newSquare = {} // creating an empty object
+  
+  newSquare.size = random(BALL_SIZE_MIN,BALL_SIZE_MAX)
+  newSquare.position = position
+  
+  //for( let shape of shapes ) {
+  //  if( shapesCollide(shape,newSquare) ) {
+  //    return createSquare()
+  //  }
+  //}
+    
+  newSquare.c = color(random(256),random(256),random(256))
+    
+  newSquare.velocity = {
+    x: random(-SPEED,SPEED),
+    y: random(-SPEED,SPEED)
+  }
+  
+  newSquare.shape = "square";
+    
+  shapes.push( newSquare );
+}
+
+function createSquare() {
+  return createSquareAt({
+    x: random(BALL_SIZE_MAX, width-BALL_SIZE_MAX),
+    y: random(BALL_SIZE_MAX, height-BALL_SIZE_MAX)
+  });  
+}
+
+function createBall() {
+  return createBallAt({
+    x: random(BALL_SIZE_MAX, width-BALL_SIZE_MAX),
+    y: random(BALL_SIZE_MAX, height-BALL_SIZE_MAX)
+  });
+}
