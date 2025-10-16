@@ -30,30 +30,22 @@ function draw() {
     // here I am using _nested_ loops
     for (let i = 0; i < shapes.length - 1; i++) {
       for (let j = i + 1; j < shapes.length; j++) {
-        if (shapes[i].shape === "circle") {
+        if (shapes[i].shape === "circle") { // shapes[i] is a circle
           if (shapes[j].shape === "circle") {
             bounceBalls(shapes[i], shapes[j]);
-          } else {
-            if (shapes[j].shape === "circle") {
-            }
-            if (shapes[i].shape === "square") {
-              bounceCircleSquare(shapes[i], shapes[j]);
-            }
+          } else { // i is a circle, j is a square
+            bounceCircleSquare(shapes[i], shapes[j]);
           }
-        } else {
-          // shapes[i] is a square
+        } else { // shapes[i] is a square          
           if (shapes[j].shape === "circle") {
+            // j is a circle, i is a square
             bounceCircleSquare(shapes[j], shapes[i]);
           } else {
             bounceSquareSquare(shapes[i], shapes[j]);
-            if (shapes[i].shape === "square") {
-            }
-            if (shapes[j].shape === "square") {
-            }
           }
         }
-      }
-    }
+      } // end inner (j) for loop
+    } // end outer (i) for loop
   }
 }
 
@@ -80,9 +72,66 @@ function bounceBalls(ballA, ballB) {
   }
 }
 
-function bounceSquareSquare(squareA, squareB) {}
+function circleRect(cx, cy, radius, rx, ry, rw, rh) {
 
-function bounceCircleSquare(circleA, squareB) {}
+  // temporary variables to set edges for testing
+  let testX = cx;
+  let testY = cy;
+
+  // which edge is closest?
+  if (cx < rx)         testX = rx;      // test left edge
+  else if (cx > rx+rw) testX = rx+rw;   // right edge
+  if (cy < ry)         testY = ry;      // top edge
+  else if (cy > ry+rh) testY = ry+rh;   // bottom edge
+
+  // get distance from closest edges
+  let distX = cx-testX;
+  let distY = cy-testY;
+  let distance = sqrt( (distX*distX) + (distY*distY) );
+
+  // if the distance is less than the radius, collision!
+  if (distance <= radius) {
+    return true;
+  }
+  return false;
+}
+
+function bounceSquareSquare(squareA, squareB) {
+  if (squareSquare(
+    squareA.position.x, squareA.position.y, squareA.size, squareA.size,
+    squareB.position.x, squareB.position.y, squareB.size, squareB.size
+  )) {
+    squareA.velocity.x *= -1;
+    squareA.velocity.y *= -1;
+    squareB.velocity.x *= -1;
+    squareB.velocity.y *= -1;
+  }
+}
+
+function squareSquare(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
+
+  // are the sides of one rectangle touching the other?
+
+  if (r1x + r1w >= r2x &&    // r1 right edge past r2 left
+      r1x <= r2x + r2w &&    // r1 left edge past r2 right
+      r1y + r1h >= r2y &&    // r1 top edge past r2 bottom
+      r1y <= r2y + r2h) {    // r1 bottom edge past r2 top
+        return true;
+  }
+  return false;
+}
+
+
+
+function bounceCircleSquare(circleA, squareB) {
+  if( circleRect(circleA.position.x, circleA.position.y, circleA.radius, squareB.position.x, squareB.position.y, squareB.size, squareB.size) ) {
+    circleA.velocity.x *= -1;
+    circleA.velocity.y *= -1;
+    squareB.velocity.x *= -1;
+    squareB.velocity.y *= -1;    
+  }
+  
+}
 
 function keepSquareInBounds(square) {
   // x,y is the upper left corner
